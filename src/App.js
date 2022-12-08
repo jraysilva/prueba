@@ -18,9 +18,9 @@ function App() {
   return (
     <div >
       <Menu setToken={setToken} />
-      <HashRouter>
+      <HashRouter basename={process.env.PUBLIC_URL}>
       <Routes>
-          <Route exact path="prueba/productos" element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>
+          <Route exact path="/productos" element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>
           <Route exact path="/" element={token ?  <Inicio />  : <Login token={token} setToken={setToken}/>}/>
       </Routes>
       </HashRouter>
