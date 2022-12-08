@@ -20,8 +20,8 @@ function App() {
       <Menu setToken={setToken} />
       <BrowserRouter>
       <Routes>
-          <Route exact path="/productos" element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>
-          <Route exact path="/" element={token ?  <Inicio />  : <Login token={token} setToken={setToken}/>}/>
+          <Route exact path={process.env.PUBLIC_URL + '/productos'} element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>
+          <Route exact path={process.env.PUBLIC_URL + '/'} element={token ?  <Inicio />  : <Login token={token} setToken={setToken}/>}/>
       </Routes>
       </BrowserRouter>
       <Footer />
