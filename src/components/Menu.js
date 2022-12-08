@@ -12,7 +12,7 @@ const Menu = ({setToken}) => {
 
   const logOutHandler=()=>{
     localStorage.clear();
-    document.location.href = '/prueba/build"'
+    document.location.href = '/prueba/build'
   }
   return (
     <div>
