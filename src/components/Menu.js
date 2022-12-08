@@ -12,7 +12,7 @@ const Menu = ({setToken}) => {
 
   const logOutHandler=()=>{
     localStorage.clear();
-    document.location.href = '/'
+    document.location.href = '/prueba/build"'
   }
   return (
     <div>
@@ -28,7 +28,7 @@ const Menu = ({setToken}) => {
           <Nav className="me-auto">
           
             <Nav.Link href="#link">Procesos E/S</Nav.Link>
-            <Nav.Link href="/productos">PRODUCTOS</Nav.Link>
+            <Nav.Link href="/prueba/build/productos">PRODUCTOS</Nav.Link>
 
 
           
