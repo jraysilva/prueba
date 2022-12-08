@@ -12,13 +12,13 @@ const Menu = ({setToken}) => {
 
   const logOutHandler=()=>{
     localStorage.clear();
-    document.location.href = '/'
+    document.location.href = '/prueba/build/'
   }
   return (
     <div>
         <Navbar bg="light" expand="lg">
       <Container>
-      <a class="navbar-brand" href="/">
+      <a class="navbar-brand" href="/prueba/build/">
       <img src={process.env.PUBLIC_URL + '/logo.png'} alt="" width="150" height="70" class="d-inline-block align-text-top"/>
     
     </a>
@@ -28,7 +28,7 @@ const Menu = ({setToken}) => {
           <Nav className="me-auto">
           
             <Nav.Link href="#link">Procesos E/S</Nav.Link>
-            <Nav.Link href="/productos">PRODUCTOS</Nav.Link>
+            <Nav.Link href="/prueba/build/#/productos">PRODUCTOS</Nav.Link>
 
 
           
