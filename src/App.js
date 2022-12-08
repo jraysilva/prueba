@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { HashRouter, Routes, Route } from "react-router-dom"
 import Menu from './components/Menu';
 import Footer from './components/Footer';
 import Productos from './components/Productos';
@@ -18,12 +18,12 @@ function App() {
   return (
     <div >
       <Menu setToken={setToken} />
-      <BrowserRouter>
+      <HashRouter>
       <Routes>
           <Route exact path="/productos" element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>
           <Route exact path="/" element={token ?  <Inicio />  : <Login token={token} setToken={setToken}/>}/>
       </Routes>
-      </BrowserRouter>
+      </HashRouter>
       <Footer />
     </div>
 
