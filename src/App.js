@@ -20,7 +20,7 @@ function App() {
       <Menu setToken={setToken} />
       <HashRouter>
       <Routes>
-          <Route path="/prueba/build/productos" element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>
+          <Route path="/prueba/build/productos" exact element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>
           <Route exact path="/" element={token ?  <Inicio />  : <Login token={token} setToken={setToken}/>}/>
       </Routes>
       </HashRouter>
