@@ -64,16 +64,15 @@ const Procesos = () => {
 
   const columns = [
     { field: "prdid", headerName: "ID", flex: 1 },
-    { field: "prdclave", headerName: "Clave", flex: 1 },
-    { field: "prdups", headerName: "UPS", flex: 1 },
-    { field: "prdnombre", headerName: "Nombre", flex: 1 },
-    { field: "prdlinid", headerName: "Unidad", flex: 1 },
-    { field: "prdualid", headerName: "División", flex: 1 },
-    { field: "prdpzascaja", headerName: "Pza Caja", flex: 1 },
-    { field: "prdpzaspallet", headerName: "Pza Pallet", flex: 1 },
-    { field: "prdpeso", headerName: "Peso", flex: 1 },
-    { field: "prdvolumen", headerName: "Volumen", flex: 1 },
-    { field: "prdestatus", headerName: "Estatus", fles:1},
+    { field: "prdclave", headerName: "Tipo", flex: 1 },
+    { field: "prdups", headerName: "Fecha/Hora", flex: 1 },
+    { field: "prdnombre", headerName: "Linea", flex: 1 },
+    { field: "prdlinid", headerName: "HC", flex: 1 },
+    { field: "prdualid", headerName: "Clave", flex: 1 },
+    { field: "prdpzascaja", headerName: "Descripción", flex: 1 },
+    { field: "prdpzaspallet", headerName: "Cantidad", flex: 1 },
+    { field: "prdpeso", headerName: "Comentarios", flex: 1 },
+   
    
     
   ];
