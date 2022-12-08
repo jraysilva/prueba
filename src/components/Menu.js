@@ -18,11 +18,11 @@ const Menu = ({setToken}) => {
     <div>
         <Navbar bg="light" expand="lg">
       <Container>
-      <a class="navbar-brand" href="/">
+      <a class="navbar-brand" href="/prueba/build">
       <img src={process.env.PUBLIC_URL + '/logo.png'} alt="" width="150" height="70" class="d-inline-block align-text-top"/>
     
     </a>
-        <Navbar.Brand href="/prueba/build">INICIO</Navbar.Brand>
+        <Navbar.Brand href="/prueba/build/productos">INICIO</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
