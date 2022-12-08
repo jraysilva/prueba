@@ -27,7 +27,7 @@ const Menu = ({setToken}) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
           
-            <Nav.Link href="#link">Procesos E/S</Nav.Link>
+            <Nav.Link href="/prueba/build/#/procesos">Procesos E/S</Nav.Link>
             <Nav.Link href="/prueba/build/#/productos">PRODUCTOS</Nav.Link>
 
 
