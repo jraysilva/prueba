@@ -3,6 +3,7 @@ import { DataGrid, gridColumnsTotalWidthSelector } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -60,33 +61,33 @@ const Procesos = () => {
   const [prdestatus, setPrdestatus]= useState("");
   const [error, setError] = useState("");
 
-  
+
 
   const columns = [
-    { field: "prdid", headerName: "ID", flex: 1 },
-    { field: "prdclave", headerName: "Tipo", flex: 1 },
-    { field: "prdups", headerName: "Fecha/Hora", flex: 1 },
-    { field: "prdnombre", headerName: "Linea", flex: 1 },
-    { field: "prdlinid", headerName: "HC", flex: 1 },
-    { field: "prdualid", headerName: "Clave", flex: 1 },
-    { field: "prdpzascaja", headerName: "Descripción", flex: 1 },
-    { field: "prdpzaspallet", headerName: "Cantidad", flex: 1 },
-    { field: "prdpeso", headerName: "Comentarios", flex: 1 },
+    { field: "mprid", headerName: "ID", flex: 1 },
+    { field: "mprtipo", headerName: "Tipo", flex: 1 },
+    { field: "mprfecha", headerName: "Fecha/Hora", flex: 1 },
+    { field: "mprlprid", headerName: "Linea", flex: 1 },
+    { field: "mprheadcount", headerName: "HC", flex: 1 },
+    { field: "prdclave", headerName: "Clave", flex: 1 },
+    { field: "prdnombre", headerName: "Descripción", flex: 1 },
+    { field: "mprcantidad", headerName: "Cantidad", flex: 1 },
+    { field: "mprcoms", headerName: "Comentarios", flex: 1 },
    
    
     
   ];
 
   const options = [
-    { value: 'A', label: 'A' },
-    { value: 'I', label: 'I' },
+    { value: 'E', label: 'E' },
+    { value: 'S', label: 'S' },
     
   ]
 
   
 
   
-  const handleAgregarProducto = () => {
+  const handleAgregarProceso = () => {
     
 
     axios({
@@ -95,18 +96,7 @@ const Procesos = () => {
       {
         "items":    [
       {
-        "prdid":prdid,
-         "prdclave": prdclave,
-         "prdups": prdups,
-         "prdempid": 1,
-         "prdnombre": prdnombre,
-         "prdlinid": prdlinid,
-         "prdualid": prdualid,
-         "prdpzascaja": prdpzascaja,
-         "prdpzaspallet": prdpzaspallet,
-         "prdpeso": prdpeso,
-         "prdvolumen": prdvolumen,
-         "prdestatus": prdestatus
+        
       }]},
 
     }).then(res=>{
@@ -129,7 +119,7 @@ const Procesos = () => {
   const fetchCharacters = () => {
     console.log('ON')
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=2`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -140,10 +130,14 @@ const Procesos = () => {
       
   };
   const handleRowClick = (params) => {
+    
+    
+
+
     setDeshabilitado(true);
     setEliminar(false);
-    fetchUnidades();
-    fetchDivision();
+    fetchEstatus();
+    fetchLinea();
 
    
     
@@ -185,14 +179,14 @@ const Procesos = () => {
     setPrdpzaspallet("");
     setPrdpeso("");
     setPrdvolumen("");
-    setPrdestatus("A");
+    setPrdestatus("E");
    
   };
 
-  const fetchUnidades = () => {
+  const fetchLinea = () => {
     
     axios
-    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/unidades`)
+    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/lineaproduccion?empresa=1`)
     .then((data) => {
       setUnidades(data.data.items);
       
@@ -203,10 +197,10 @@ const Procesos = () => {
   
   };
 
-  const fetchDivision = () => {
+  const fetchEstatus = () => {
     
     axios
-    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/division?empresa=1`)
+    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/estproducto`)
     .then((data) => {
       setDivisiones(data.data.items);
       
@@ -219,12 +213,13 @@ const Procesos = () => {
 
 
   const handleShow = () => {
-    fetchUnidades();
-    fetchDivision();
+    fetchLinea();
+    fetchEstatus();
     setDeshabilitado(false);
     setShow(true);
-    setEliminar(true);
-    setPrdestatus("A");
+   
+    setPrdestatus("E");
+    console.log(localStorage.getItem("userToken"))
   
 
   
@@ -249,7 +244,7 @@ const Procesos = () => {
       <Container fixed>
         <Grid item xs={6}>
           <IconButton color="primary" aria-label="add to shopping cart" onClick={handleShow}>
-          <AddShoppingCartIcon />
+          <AddIcon />
           </IconButton>
         </Grid>
  <Box
@@ -284,14 +279,8 @@ const Procesos = () => {
           onPageChange={(newPage) => setPage(newPage)}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           columns={columns}
-          
-          
-          getRowId={row => row.prdid}
-          
-          
+          getRowId={row => row.mprid}
           onRowClick={handleRowClick}
-          
-       
         />
   </Box>
       </Container>
@@ -304,62 +293,12 @@ const Procesos = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="prdclave">
-              <Form.Label>Clave</Form.Label>
+              <Form.Label>Usuario</Form.Label>
               <Form.Control type="text" value={prdclave} onChange={(e)=>setPrdclave(e.target.value)} autoFocus  disabled={deshabilitado}/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="prdups">
-              <Form.Label>UPS</Form.Label>
-              <Form.Control type="text" value={prdups} onChange={(e)=>setPrdups(e.target.value)}/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdnombre">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control type="text" value={prdnombre} onChange={(e)=>setPrdnombre(e.target.value)}/>
-            </Form.Group>
-            
-            <Form.Group className="mb-3" controlId="prdualid">
-              <Form.Label>Unidad</Form.Label>
-              <Select 
-              
-              options = { unidades.map(sup => ({ label: sup.ualnombre, value: sup.ualnombre })) }
-              defaultValue={{label: `${prdualid}`, value:`${prdualid}`}}
-              onChange={(sup) => setPrdualid(sup.value)}
-                />
-             
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdlinid">
-              <Form.Label>División</Form.Label>
-              <Select 
-              options = { divisiones.map(sup => ({ label: sup.linnombre, value: sup.linnombre })) }
-              defaultValue={{label: `${prdlinid}`, value:`${prdlinid}`}}
-              onChange={(sup) => setPrdlinid(sup.value)}
-                />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdpzascaja">
-              <Form.Label>Pzas Caja</Form.Label>
-              <Form.Control type="text" value={prdpzascaja} onChange={(e)=>setPrdpzascaja(e.target.value)}/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdpzaspallet">
-              <Form.Label>Pzas Pallet</Form.Label>
-              <Form.Control type="text" value={prdpzaspallet} onChange={(e)=>setPrdpzaspallet(e.target.value)}/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdpeso">
-              <Form.Label>Peso</Form.Label>
-              <Form.Control type="text" value={prdpeso} onChange={(e)=>setPrdpeso(e.target.value)} required/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdvolumen">
-              <Form.Label>Volumen</Form.Label>
-              <Form.Control type="text" value={prdvolumen} onChange={(e)=>setPrdvolumen(e.target.value)}/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdestatus">
-              <Form.Label>Estatus</Form.Label>
+              <Form.Label>Tipo Movimiento</Form.Label>
               <Select 
               options = {options}
               defaultValue={{label: `${prdestatus}`, value:`${prdestatus}`}}
@@ -368,6 +307,56 @@ const Procesos = () => {
 
 
               />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="prdnombre">
+              <Form.Label>Linea de producción</Form.Label>
+              <Select 
+              options = { unidades.map(sup => ({ label: sup.lprid, value: sup.lprid })) }
+              defaultValue={{label: `${prdualid}`, value:`${prdualid}`}}
+              onChange={(sup) => setPrdualid(sup.value)}
+                />
+            </Form.Group>
+            
+            <Form.Group className="mb-3" controlId="prdualid">
+              <Form.Label>Clave de producto</Form.Label>
+              <Form.Control type="text" value={prdclave} onChange={(e)=>setPrdclave(e.target.value)} autoFocus  disabled={deshabilitado}/>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="prdlinid">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control type="text" value={prdvolumen} onChange={(e)=>setPrdvolumen(e.target.value)}/>
+
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="prdpzascaja">
+              <Form.Label>Unidad</Form.Label>
+              <Form.Control type="text" value={prdpzascaja} onChange={(e)=>setPrdpzascaja(e.target.value)}/>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="prdpzaspallet">
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control type="text" value={prdpzaspallet} onChange={(e)=>setPrdpzaspallet(e.target.value)}/>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="prdpeso">
+              <Form.Label>Personal</Form.Label>
+              <Form.Control type="text" value={prdpeso} onChange={(e)=>setPrdpeso(e.target.value)} required/>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="prdvolumen">
+              <Form.Label>Estatus</Form.Label>
+              <Select 
+              options = { divisiones.map(sup => ({ label: sup.eprid, value: sup.eprid })) }
+              defaultValue={{label: `${prdualid}`, value:`${prdualid}`}}
+              onChange={(sup) => setPrdualid(sup.value)}
+                />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="prdestatus">
+              <Form.Label>Comentarios</Form.Label>
+              <Form.Control type="text" value={prdvolumen} onChange={(e)=>setPrdvolumen(e.target.value)}/>
+
          
               
             </Form.Group>
@@ -377,7 +366,7 @@ const Procesos = () => {
 
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
-          <Button variant="primary" onClick={handleAgregarProducto}>Agregar</Button>
+          <Button variant="primary" onClick={handleAgregarProceso}>Agregar</Button>
         </Modal.Footer>
 
       </Modal>

@@ -22,13 +22,13 @@ const Menu = ({setToken}) => {
       <img src={process.env.PUBLIC_URL + '/logo.png'} alt="" width="150" height="70" class="d-inline-block align-text-top"/>
     
     </a>
-        <Navbar.Brand href="/prueba/build">INICIO</Navbar.Brand>
+        <Navbar.Brand href="/prueba/build">Inicio</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
           
             <Nav.Link href="/prueba/build/#/procesos">Procesos E/S</Nav.Link>
-            <Nav.Link href="/prueba/build/#/productos">PRODUCTOS</Nav.Link>
+            <Nav.Link href="/prueba/build/#/productos">Productos</Nav.Link>
 
 
           
