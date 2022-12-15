@@ -11,7 +11,9 @@ import Container from '@mui/material/Container';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Select from 'react-select';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { createFakeServer } from '@mui/x-data-grid-generator';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 const Procesos = () => {
@@ -19,9 +21,11 @@ const Procesos = () => {
   const [show, setShow] = useState(false);
   const [deshabilitado, setDeshabilitado] = useState(false);
   const [eliminar, setEliminar] = useState(false);
+  const [procesos, setProcesos] = useState([]);
   const [characters, setCharacters] = useState([]);
-  const [unidades, setUnidades] = useState([]);
-  const [divisiones, setDivisiones] = useState([]);
+  const [tipo, setTipo] = useState([]);
+  const [estatus, setEstatus] = useState([]);
+  const [linea, setLinea] = useState([]);
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(10);
 
@@ -46,19 +50,18 @@ const Procesos = () => {
   );
 
 
-
-  const [prdid, setPrdid] = useState("");
+  const [mprid, setMprid] = useState("");
   const [prdclave, setPrdclave] = useState("");
-  const [prdups, setPrdups] = useState("");
-  const [prdempid, setPrdempid] = useState("");
+  const [mprtipo, setMprtipo] = useState("");
+  const [mprfecha, setMprfecha] = useState("");
+  const [mprlprid, setMprlprid] = useState("");
+  const [mprheadcount, setMprheadcount] = useState("");
   const [prdnombre, setPrdnombre] = useState("");
-  const [prdlinid, setPrdlinid] = useState("");
-  const [prdualid, setPrdualid] = useState("");
-  const [prdpzascaja, setPrdpzascaja] = useState("");
-  const [prdpzaspallet, setPrdpzaspallet] = useState("");
-  const [prdpeso, setPrdpeso] = useState("");
-  const [prdvolumen, setPrdvolumen] = useState("");
-  const [prdestatus, setPrdestatus]= useState("");
+  const [mprcoms, setMprcoms] = useState("");
+  const [mprcantidad, setMprcantidad] = useState("");
+  const [mprusuid, setMprusuid] = useState("");
+  const [mprunidad, setMprunidad] = useState("");
+  const [mprestatus, setMprestatus] = useState("");
   const [error, setError] = useState("");
 
 
@@ -73,29 +76,32 @@ const Procesos = () => {
     { field: "prdnombre", headerName: "Descripción", flex: 1 },
     { field: "mprcantidad", headerName: "Cantidad", flex: 1 },
     { field: "mprcoms", headerName: "Comentarios", flex: 1 },
-   
-   
-    
   ];
 
   const options = [
     { value: 'E', label: 'E' },
     { value: 'S', label: 'S' },
-    
   ]
 
-  
-
-  
   const handleAgregarProceso = () => {
+    console.log(prdclave)
+    console.log(mprtipo)
     
-
     axios({
-      url:"http://ciacloud.dyndns.org:8088/cia/prod/prod/productos",method:"POST",
+      url:"http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso",method:"POST",
       data:
       {
         "items":    [
       {
+        "mprtipo": mprtipo,
+        "mprlprid": mprlprid,
+        "prdclave": prdclave,
+        "prdempid": 1,
+        "mprusuid": 1,
+        "mprcantidad": mprcantidad,
+        "mprheadcount": mprheadcount,
+        "mpreprid": mprestatus,
+        "mprcoms": mprcoms
         
       }]},
 
@@ -116,12 +122,13 @@ const Procesos = () => {
 
   };
 
-  const fetchCharacters = () => {
+  const fetchProcesos = () => {
     console.log('ON')
     axios
       .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso`)
       .then((data) => {
-        setCharacters(data.data.items);
+        setProcesos(data.data.items);
+      
        
       })
       .catch((error) => {
@@ -131,37 +138,7 @@ const Procesos = () => {
   };
   const handleRowClick = (params) => {
     
-    
 
-
-    setDeshabilitado(true);
-    setEliminar(false);
-    fetchEstatus();
-    fetchLinea();
-
-   
-    
-    setPrdclave(`${params.row.prdclave}`);
-    
-
-    if (params.row.prdups === null) {
-      setPrdups("");
-      
-     } else {
-      setPrdups(`${params.row.prdups}`);
-     }
-
-    setPrdempid(`${params.row.prdempid}`);
-    setPrdnombre(`${params.row.prdnombre}`);
-    setPrdualid(`${params.row.prdualid}` );
-    setPrdlinid( `${params.row.prdlinid}` );
-    setPrdpzascaja(`${params.row.prdpzascaja}`);
-    setPrdpzaspallet(`${params.row.prdpzaspallet}`);
-    setPrdpeso(`${params.row.prdpeso}`);
-    setPrdvolumen(`${params.row.prdvolumen}`);
-    setPrdestatus(`${params.row.prdestatus}`);
-    console.log(`${params.row.prdualid}`)
-    setShow(true);
 
   };
 
@@ -169,18 +146,7 @@ const Procesos = () => {
 
     setShow(false);
     setPrdclave("");
-    setPrdups("");
-    setPrdups("");
-    setPrdempid("");
-    setPrdnombre("");
-    setPrdlinid("");
-    setPrdualid("");
-    setPrdpzascaja("");
-    setPrdpzaspallet("");
-    setPrdpeso("");
-    setPrdvolumen("");
-    setPrdestatus("E");
-   
+ 
   };
 
   const fetchLinea = () => {
@@ -188,7 +154,7 @@ const Procesos = () => {
     axios
     .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/lineaproduccion?empresa=1`)
     .then((data) => {
-      setUnidades(data.data.items);
+      setLinea(data.data.items);
       
     })
     .catch((error) => {
@@ -197,18 +163,35 @@ const Procesos = () => {
   
   };
 
+  
   const fetchEstatus = () => {
     
     axios
     .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/estproducto`)
     .then((data) => {
-      setDivisiones(data.data.items);
+      setEstatus(data.data.items);
       
     })
     .catch((error) => {
       console.log(error);
     });
   
+  };
+  
+  const fetchCharacters = () => {
+    console.log('ON')
+    axios
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=0001354`)
+      .then((data) => {
+        setCharacters(data.data.items);
+       
+       
+       
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      
   };
 
 
@@ -218,17 +201,14 @@ const Procesos = () => {
     setDeshabilitado(false);
     setShow(true);
    
-    setPrdestatus("E");
+   
     console.log(localStorage.getItem("userToken"))
-  
-
   
   };
 
-  
-  
-
-  
+  const buscarProducto=()=>{
+    fetchCharacters();
+  }
 
   useEffect(() => {
     setRowCountState((prevRowCountState) =>
@@ -236,7 +216,7 @@ const Procesos = () => {
         ? pageInfo?.totalRowCount
         : prevRowCountState,
     );
-    fetchCharacters();
+    fetchProcesos();
   },  [pageInfo?.totalRowCount, setRowCountState]);
 
   return (
@@ -262,13 +242,10 @@ const Procesos = () => {
         <DataGrid
          initialState={{
           sorting: {
-            sortModel: [{ field: 'prdid', sort: 'desc' }],
+            sortModel: [{ field: 'mprid', sort: 'desc' }],
           },
         }}
-
-
-
-          rows={characters}
+          rows={procesos}
           rowCount={rowCountState}
           loading={isLoading}
           rowsPerPageOptions={[5]}
@@ -294,73 +271,83 @@ const Procesos = () => {
           <Form>
             <Form.Group className="mb-3" controlId="prdclave">
               <Form.Label>Usuario</Form.Label>
-              <Form.Control type="text" value={prdclave} onChange={(e)=>setPrdclave(e.target.value)} autoFocus  disabled={deshabilitado}/>
+              <Form.Control type="text" value={localStorage.getItem("userToken")} onChange={(e)=>setMprusuid(e.target.value)} autoFocus  disabled={deshabilitado}/>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="prdups">
-              <Form.Label>Tipo Movimiento</Form.Label>
+            <Form.Group className="mb-3" controlId="prdestatus">
+              <Form.Label>Tipo</Form.Label>
               <Select 
               options = {options}
-              defaultValue={{label: `${prdestatus}`, value:`${prdestatus}`}}
-              onChange={(sup) => setPrdestatus(sup.value)}
+              defaultValue={{label: `${mprtipo}`, value:`${mprtipo}`}}
+              onChange={(sup) => setMprtipo(sup.value)}
               isDisabled={eliminar}
-
-
-              />
+              />    
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="prdnombre">
               <Form.Label>Linea de producción</Form.Label>
               <Select 
-              options = { unidades.map(sup => ({ label: sup.lprid, value: sup.lprid })) }
-              defaultValue={{label: `${prdualid}`, value:`${prdualid}`}}
-              onChange={(sup) => setPrdualid(sup.value)}
+              options = { linea.map(sup => ({ label: sup.lprid, value: sup.lprid })) }
+              defaultValue={{label: `${mprlprid}`, value:`${mprlprid}`}}
+              onChange={(sup) => setMprlprid(sup.value)}
                 />
             </Form.Group>
-            
-            <Form.Group className="mb-3" controlId="prdualid">
-              <Form.Label>Clave de producto</Form.Label>
-              <Form.Control type="text" value={prdclave} onChange={(e)=>setPrdclave(e.target.value)} autoFocus  disabled={deshabilitado}/>
+
+            <Form.Group className="mb-3" controlId="prdclave">
+              <Form.Label>Clave</Form.Label>
+              
+              <InputGroup className="mb-3">
+        <Form.Control
+          placeholder="Ingresa una clave"
+          value={prdclave}
+          onChange={(e)=>setPrdclave(e.target.value)}
+          
+        />
+         <IconButton color="primary" aria-label="add to shopping cart" onClick={buscarProducto}>
+          <SearchIcon />
+          </IconButton>
+      </InputGroup>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="prdlinid">
+            <Form.Group className="mb-3" controlId="prdnombre">
               <Form.Label>Descripción</Form.Label>
-              <Form.Control type="text" value={prdvolumen} onChange={(e)=>setPrdvolumen(e.target.value)}/>
-
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdpzascaja">
-              <Form.Label>Unidad</Form.Label>
-              <Form.Control type="text" value={prdpzascaja} onChange={(e)=>setPrdpzascaja(e.target.value)}/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdpzaspallet">
-              <Form.Label>Cantidad</Form.Label>
-              <Form.Control type="text" value={prdpzaspallet} onChange={(e)=>setPrdpzaspallet(e.target.value)}/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdpeso">
-              <Form.Label>Personal</Form.Label>
-              <Form.Control type="text" value={prdpeso} onChange={(e)=>setPrdpeso(e.target.value)} required/>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdvolumen">
-              <Form.Label>Estatus</Form.Label>
-              <Select 
-              options = { divisiones.map(sup => ({ label: sup.eprid, value: sup.eprid })) }
-              defaultValue={{label: `${prdualid}`, value:`${prdualid}`}}
-              onChange={(sup) => setPrdualid(sup.value)}
-                />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="prdestatus">
-              <Form.Label>Comentarios</Form.Label>
-              <Form.Control type="text" value={prdvolumen} onChange={(e)=>setPrdvolumen(e.target.value)}/>
-
-         
+              <Form.Control type="text" value={prdnombre} onChange={(e)=>setPrdnombre(e.target.value)}/>
               
             </Form.Group>
 
+            <Form.Group className="mb-3" controlId="mprunidad">
+              <Form.Label>Unidad</Form.Label>
+              <Form.Control type="text" value={mprunidad} onChange={(e)=>setMprunidad(e.target.value)}/>
+            </Form.Group>
+
+
+
+
+
+            <Form.Group className="mb-3" controlId="mprcantidad">
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control type="text" value={mprcantidad} onChange={(e)=>setMprcantidad(e.target.value)} autoFocus  disabled={deshabilitado}/>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="mprheadcount">
+              <Form.Label>HC</Form.Label>
+              <Form.Control type="text" value={mprheadcount} onChange={(e)=>setMprheadcount(e.target.value)} autoFocus  disabled={deshabilitado}/>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="mprestatus">
+              <Form.Label>Estatus</Form.Label>
+              <Select 
+              options = { estatus.map(sup => ({ label: sup.eprnombre, value: sup.eprid })) }
+              defaultValue={{label: `${mprestatus}`, value:`${mprestatus}`}}
+              onChange={(sup) => setMprestatus(sup.value)}
+                />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="mprcoms">
+              <Form.Label>Comentarios</Form.Label>
+              <Form.Control type="text" value={mprcoms} onChange={(e)=>setMprcoms(e.target.value)} autoFocus  disabled={deshabilitado}/>
+            </Form.Group>
+
+
+           
           </Form>
         </Modal.Body>
 
