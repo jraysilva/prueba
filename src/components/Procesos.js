@@ -14,12 +14,16 @@ import Select from 'react-select';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { createFakeServer } from '@mui/x-data-grid-generator';
 import SearchIcon from '@mui/icons-material/Search';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Accordion from 'react-bootstrap/Accordion';
+import moment from 'moment';
 
 
 const Procesos = () => {
   
   const [show, setShow] = useState(false);
-  const [deshabilitado, setDeshabilitado] = useState(false);
+  const [deshabilitado, setDeshabilitado] = useState(true);
   const [eliminar, setEliminar] = useState(false);
   const [procesos, setProcesos] = useState([]);
   const [characters, setCharacters] = useState([]);
@@ -51,8 +55,12 @@ const Procesos = () => {
 
 
   const [mprid, setMprid] = useState("");
+  const [finicio, setFinicio] = useState("");
+  const [ffin, setFfin] = useState("");
   const [prdclave, setPrdclave] = useState("");
   const [mprtipo, setMprtipo] = useState("");
+  const [fechaini, setFechaIni]=useState("");
+  const [fechafin, setFechaFin]=useState("");
   const [mprfecha, setMprfecha] = useState("");
   const [mprlprid, setMprlprid] = useState("");
   const [mprheadcount, setMprheadcount] = useState("");
@@ -79,8 +87,8 @@ const Procesos = () => {
   ];
 
   const options = [
-    { value: 'E', label: 'E' },
-    { value: 'S', label: 'S' },
+    { value: 'E', label: 'Entrada' },
+    { value: 'S', label: 'Salida' },
   ]
 
   const handleAgregarProceso = () => {
@@ -124,8 +132,22 @@ const Procesos = () => {
 
   const fetchProcesos = () => {
     console.log('ON')
+    
+    
+
+    if (fechaini===""|| fechafin==="") {
+      console.log("sin fechas")
+     
+      
+     } else {
+      setFinicio(moment(fechaini).format('DD/MM/YYYY'))
+      setFfin(moment(fechafin).format('DD/MM/YYYY'))
+      console.log("buscando entre el rango de fechas")
+     }
+
+    
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso?tipo=${mprtipo}&fechaini=${finicio}&fechafin=${ffin}&linea=${mprlprid}&clave=${prdclave}`)
       .then((data) => {
         setProcesos(data.data.items);
       
@@ -180,11 +202,15 @@ const Procesos = () => {
   
   const fetchCharacters = () => {
     console.log('ON')
+   
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=0001354`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}`)
       .then((data) => {
         setCharacters(data.data.items);
        
+        console.log(data.data.items[0].prdclave);
+        setPrdnombre(data.data.items[0].prdnombre);
+        setMprunidad(data.data.items[0].prdualid);
        
        
       })
@@ -210,6 +236,15 @@ const Procesos = () => {
     fetchCharacters();
   }
 
+  const fetchLimpiar=()=>{
+    setPrdclave("");
+    setMprlprid("");
+    setMprtipo("");
+    fetchProcesos();
+
+    
+  }
+
   useEffect(() => {
     setRowCountState((prevRowCountState) =>
       pageInfo?.totalRowCount !== undefined
@@ -217,6 +252,7 @@ const Procesos = () => {
         : prevRowCountState,
     );
     fetchProcesos();
+    fetchLinea();
   },  [pageInfo?.totalRowCount, setRowCountState]);
 
   return (
@@ -227,6 +263,107 @@ const Procesos = () => {
           <AddIcon />
           </IconButton>
         </Grid>
+
+        <Accordion defaultActiveKey="2">
+        <Accordion.Item eventKey="0">
+        <Accordion.Header>Busqueda Avanzada</Accordion.Header>
+        <Accordion.Body>
+
+        <Form>
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label>Estatus</Form.Label>
+          <Select 
+              options = {options}
+              defaultValue={{label: `${mprtipo}`, value:`${mprtipo}`}}
+              onChange={(sup) => setMprtipo(sup.value)}
+              isDisabled={eliminar}
+              />    
+          
+        </Form.Group>
+        
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label>Fecha Inicio</Form.Label>
+          <Form.Control type="date" 
+          placeholder="Enter email" 
+          value={fechaini}
+          onChange={(e)=>setFechaIni(e.target.value)}/>
+        </Form.Group>
+
+        <Form.Group as={Col} controlId="formGridPassword">
+          <Form.Label>Fecha Fin</Form.Label>
+          <Form.Control type="date" 
+          placeholder="Password" 
+          value={fechafin}
+          onChange={(e)=>setFechaFin(e.target.value)}/>
+        </Form.Group>
+       
+  
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label>Linea de producción</Form.Label>
+          <Select 
+              options = { linea.map(sup => ({ label: sup.lprid, value: sup.lprid })) }
+              defaultValue={{label: `${mprlprid}`, value:`${mprlprid}`}}
+              onChange={(sup) => setMprlprid(sup.value)}
+                />  
+          
+        </Form.Group>
+        
+      </Row>
+
+
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label>Clave</Form.Label>
+          <Form.Control
+          placeholder="Ingresa una clave"
+          value={prdclave}
+          onChange={(e)=>setPrdclave(e.target.value)}
+          autoFocus
+          
+          
+        />
+        </Form.Group>
+      </Row>
+
+   
+
+      <Row className="mb-3">
+      <Form.Group as={Col} controlId="formGridEmail">
+      <Button variant="primary" onClick={fetchProcesos}>
+        Buscar
+      </Button>
+
+      </Form.Group>
+      
+      <Form.Group as={Col} controlId="formGridEmail">
+      <Button variant="primary"  onClick={fetchLimpiar}>
+        Limpiar
+      </Button>
+
+      </Form.Group>
+      
+
+
+      </Row>
+
+      
+    </Form>
+
+
+        </Accordion.Body>
+        </Accordion.Item>
+        </Accordion>
+
+        
+
+
  <Box
       sx={{
         display: 'flex',
@@ -271,7 +408,7 @@ const Procesos = () => {
           <Form>
             <Form.Group className="mb-3" controlId="prdclave">
               <Form.Label>Usuario</Form.Label>
-              <Form.Control type="text" value={localStorage.getItem("userToken")} onChange={(e)=>setMprusuid(e.target.value)} autoFocus  disabled={deshabilitado}/>
+              <Form.Control type="text" value={localStorage.getItem("userToken")} onChange={(e)=>setMprusuid(e.target.value)}   disabled={true}/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="prdestatus">
@@ -301,23 +438,28 @@ const Procesos = () => {
           placeholder="Ingresa una clave"
           value={prdclave}
           onChange={(e)=>setPrdclave(e.target.value)}
+          autoFocus
+          
           
         />
          <IconButton color="primary" aria-label="add to shopping cart" onClick={buscarProducto}>
           <SearchIcon />
           </IconButton>
       </InputGroup>
+
+      
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="prdnombre">
               <Form.Label>Descripción</Form.Label>
-              <Form.Control type="text" value={prdnombre} onChange={(e)=>setPrdnombre(e.target.value)}/>
+              <Form.Control type="text" value={prdnombre} onChange={(e)=>setPrdnombre(e.target.value)}
+              disabled={true}/>
               
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="mprunidad">
               <Form.Label>Unidad</Form.Label>
-              <Form.Control type="text" value={mprunidad} onChange={(e)=>setMprunidad(e.target.value)}/>
+              <Form.Control type="text" value={mprunidad} onChange={(e)=>setMprunidad(e.target.value)} disabled={true}/>
             </Form.Group>
 
 
@@ -326,11 +468,11 @@ const Procesos = () => {
 
             <Form.Group className="mb-3" controlId="mprcantidad">
               <Form.Label>Cantidad</Form.Label>
-              <Form.Control type="text" value={mprcantidad} onChange={(e)=>setMprcantidad(e.target.value)} autoFocus  disabled={deshabilitado}/>
+              <Form.Control type="text" value={mprcantidad} onChange={(e)=>setMprcantidad(e.target.value)}   disabled={deshabilitado}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="mprheadcount">
               <Form.Label>HC</Form.Label>
-              <Form.Control type="text" value={mprheadcount} onChange={(e)=>setMprheadcount(e.target.value)} autoFocus  disabled={deshabilitado}/>
+              <Form.Control type="text" value={mprheadcount} onChange={(e)=>setMprheadcount(e.target.value)}   disabled={deshabilitado}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="mprestatus">
               <Form.Label>Estatus</Form.Label>
@@ -343,7 +485,7 @@ const Procesos = () => {
 
             <Form.Group className="mb-3" controlId="mprcoms">
               <Form.Label>Comentarios</Form.Label>
-              <Form.Control type="text" value={mprcoms} onChange={(e)=>setMprcoms(e.target.value)} autoFocus  disabled={deshabilitado}/>
+              <Form.Control type="text" value={mprcoms} onChange={(e)=>setMprcoms(e.target.value)}   disabled={deshabilitado}/>
             </Form.Group>
 
 
