@@ -11,6 +11,12 @@ import axios from 'axios';
 import Box from '@mui/material/Box';
 import Select from 'react-select';
 import { createFakeServer } from '@mui/x-data-grid-generator';
+import SearchIcon from '@mui/icons-material/Search';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Accordion from 'react-bootstrap/Accordion';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 const Productos = () => {
@@ -23,6 +29,7 @@ const Productos = () => {
   const [divisiones, setDivisiones] = useState([]);
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(10);
+  const [offset,setOffset]= useState(0);
 
   const SERVER_OPTIONS = {
     useCursorPagination: false,
@@ -67,8 +74,8 @@ const Productos = () => {
     { field: "prdclave", headerName: "Clave", flex: 1 },
     { field: "prdups", headerName: "UPS", flex: 1 },
     { field: "prdnombre", headerName: "Nombre", flex: 1 },
-    { field: "prdlinid", headerName: "Unidad", flex: 1 },
-    { field: "prdualid", headerName: "División", flex: 1 },
+    { field: "prdlinid", headerName: "División", flex: 1 },
+    { field: "prdualid", headerName: "Unidad", flex: 1 },
     { field: "prdpzascaja", headerName: "Pza Caja", flex: 1 },
     { field: "prdpzaspallet", headerName: "Pza Pallet", flex: 1 },
     { field: "prdpeso", headerName: "Peso", flex: 1 },
@@ -130,7 +137,7 @@ const Productos = () => {
   const fetchCharacters = () => {
     console.log('ON')
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -231,6 +238,55 @@ const Productos = () => {
   
   };
 
+  const fetchLimpiar=()=>{
+    setPrdclave("");
+ 
+    
+  }
+
+  const handleNext=()=>{
+
+    setOffset(offset + 25)
+
+    console.log('ON')
+    axios
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}`)
+      .then((data) => {
+        setCharacters(data.data.items);
+       
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+  }
+
+  const handleBack=()=>{
+    console.log("atras")
+
+   
+
+    if (offset<=0) {
+      setOffset(0)
+     
+      
+     } else {
+      setOffset(offset - 25)
+     }
+
+    console.log('ON')
+    axios
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}`)
+      .then((data) => {
+        setCharacters(data.data.items);
+       
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   
   
 
@@ -243,6 +299,8 @@ const Productos = () => {
         : prevRowCountState,
     );
     fetchCharacters();
+    fetchDivision();
+    setOffset(0)
   },  [pageInfo?.totalRowCount, setRowCountState]);
 
   return (
@@ -252,7 +310,91 @@ const Productos = () => {
           <IconButton color="primary" aria-label="add to shopping cart" onClick={handleShow}>
           <AddShoppingCartIcon />
           </IconButton>
+          
         </Grid>
+
+        <Accordion defaultActiveKey="2">
+        <Accordion.Item eventKey="0">
+        <Accordion.Header>Busqueda Avanzada</Accordion.Header>
+        <Accordion.Body>
+
+        <Form>
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label>Estatus</Form.Label>
+          <Select 
+              options = {options}
+              defaultValue={{label: `${prdestatus}`, value:`${prdestatus}`}}
+              onChange={(sup) => setPrdestatus(sup.value)}
+              isDisabled={eliminar}
+              />    
+          
+        </Form.Group>
+        
+      </Row>
+
+     
+
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label>Linea de producción</Form.Label>
+          <Select 
+              options = {divisiones.map(sup => ({ label: sup.linnombre, value: sup.linnombre })) }
+              defaultValue={{label: `${prdlinid}`, value:`${prdlinid}`}}
+              onChange={(sup) => setPrdlinid(sup.value)}
+                />  
+          
+        </Form.Group>
+        
+      </Row>
+
+
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label>Clave</Form.Label>
+          <Form.Control
+          placeholder="Ingresa una clave"
+          value={prdclave}
+          onChange={(e)=>setPrdclave(e.target.value)}
+          autoFocus
+          
+          
+        />
+        </Form.Group>
+      </Row>
+
+   
+
+      <Row className="mb-3">
+      <Form.Group as={Col} controlId="formGridEmail">
+      <Button variant="primary" onClick={fetchCharacters}>
+        Buscar
+      </Button>
+
+      </Form.Group>
+      
+      <Form.Group as={Col} controlId="formGridEmail">
+      <Button variant="primary"  onClick={fetchLimpiar}>
+        Limpiar
+      </Button>
+
+      </Form.Group>
+      
+
+
+      </Row>
+
+      
+    </Form>
+
+
+        </Accordion.Body>
+        </Accordion.Item>
+        </Accordion>
+
+
+
+
  <Box
       sx={{
         display: 'flex',
@@ -294,6 +436,20 @@ const Productos = () => {
           
        
         />
+
+<Grid item xs={6}>
+
+          <IconButton color="primary" aria-label="add to shopping cart" onClick={handleBack}>
+          <ArrowBackIcon />
+          </IconButton>
+        
+          <IconButton color="primary" aria-label="add to shopping cart" onClick={handleNext}>
+          <ArrowForwardIcon />
+          </IconButton>
+          
+        </Grid>
+
+        
   </Box>
       </Container>
 
