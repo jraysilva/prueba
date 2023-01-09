@@ -34,6 +34,8 @@ const loginHandler=()=>{
       console.log(res.data.token)
       setToken(res.data.usumail);
       localStorage.setItem("userToken", res.data.usumail);
+      localStorage.setItem("empresa", res.data.usuempid);
+      
   } else {
     setError(res.data.message);
 }
@@ -57,7 +59,7 @@ const loginHandler=()=>{
             <Card className="shadow">
               <Card.Body>
                 <div className="mb-3 mt-md-4">
-                <img className='center' src={process.env.PUBLIC_URL + '/logo.png'} width="300" height="100" /> 
+                <img className='center' src={process.env.PUBLIC_URL + '/logo.png'} width="300" height="300" /> 
             
                   <h2 className="fw-bold mb-2 text-uppercase ">Login</h2>
                   

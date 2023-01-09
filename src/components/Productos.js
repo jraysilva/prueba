@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { DataGrid, gridColumnsTotalWidthSelector } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar,esES } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import AddShoppingCartIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -31,25 +31,12 @@ const Productos = () => {
   const [pageSize, setPageSize] = React.useState(10);
   const [offset,setOffset]= useState(0);
 
-  const SERVER_OPTIONS = {
-    useCursorPagination: false,
-  };
+ 
 
-  const { initialState, useQuery } = createFakeServer({}, SERVER_OPTIONS);
+  
+ 
 
-  const queryOptions = React.useMemo(
-    () => ({
-      page,
-      pageSize,
-    }),
-    [page, pageSize],
-  );
-
-  const { isLoading, data, pageInfo } = useQuery(queryOptions);
-
-  const [rowCountState, setRowCountState] = React.useState(
-    pageInfo?.totalRowCount || 0,
-  );
+ 
 
 
 
@@ -66,28 +53,31 @@ const Productos = () => {
   const [prdvolumen, setPrdvolumen] = useState("");
   const [prdestatus, setPrdestatus]= useState("");
   const [error, setError] = useState("");
+  const [titulo, setTitulo] = useState("");
+  const [botonTitulo, setBotontitulo] = useState("");
 
   
 
   const columns = [
-    { field: "prdid", headerName: "ID", flex: 1 },
-    { field: "prdclave", headerName: "Clave", flex: 1 },
-    { field: "prdups", headerName: "UPS", flex: 1 },
-    { field: "prdnombre", headerName: "Nombre", flex: 1 },
-    { field: "prdlinid", headerName: "División", flex: 1 },
-    { field: "prdualid", headerName: "Unidad", flex: 1 },
-    { field: "prdpzascaja", headerName: "Pza Caja", flex: 1 },
-    { field: "prdpzaspallet", headerName: "Pza Pallet", flex: 1 },
-    { field: "prdpeso", headerName: "Peso", flex: 1 },
-    { field: "prdvolumen", headerName: "Volumen", flex: 1 },
-    { field: "prdestatus", headerName: "Estatus", fles:1},
+    { field: "prdid", headerName: "ID" },
+    { field: "prdclave", headerName: "Clave"},
+    { field: "prdups", headerName: "UPS" },
+    { field: "prdnombre", headerName: "Nombre",minWidth: 300  },
+    { field: "prdlinid", headerName: "División" },
+    { field: "prdualid", headerName: "Unidad"},
+    { field: "prdpzascaja", headerName: "Pza Caja"},
+    { field: "prdpzaspallet", headerName: "Pza Pallet" },
+    { field: "prdpeso", headerName: "Peso" },
+    { field: "prdvolumen", headerName: "Volumen" },
+    { field: "prdestatus", headerName: "Estatus"},
    
     
   ];
 
   const options = [
-    { value: 'A', label: 'A' },
-    { value: 'I', label: 'I' },
+  
+    { value: 'A', label: 'Activo' },
+    { value: 'I', label: 'Inactivo' },
     
   ]
 
@@ -136,8 +126,9 @@ const Productos = () => {
 
   const fetchCharacters = () => {
     console.log('ON')
+    setPrdempid(localStorage.getItem("empresa"))
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -152,6 +143,8 @@ const Productos = () => {
     setEliminar(false);
     fetchUnidades();
     fetchDivision();
+    setTitulo("Editar/Eliminar producto");
+    setBotontitulo("Guardar cambios");
 
    
     
@@ -174,6 +167,7 @@ const Productos = () => {
     setPrdpeso(`${params.row.prdpeso}`);
     setPrdvolumen(`${params.row.prdvolumen}`);
     setPrdestatus(`${params.row.prdestatus}`);
+   
     console.log(`${params.row.prdualid}`)
     setShow(true);
 
@@ -233,6 +227,8 @@ const Productos = () => {
     setShow(true);
     setEliminar(true);
     setPrdestatus("A");
+    setTitulo("Agregar nuevo producto");
+    setBotontitulo("Guardar");
   
 
   
@@ -240,17 +236,20 @@ const Productos = () => {
 
   const fetchLimpiar=()=>{
     setPrdclave("");
+    setPrdestatus("");
+
+    console.log(prdestatus)
  
     
   }
 
   const handleNext=()=>{
 
-    setOffset(offset + 25)
-
+    setOffset(offset + 100)
+console.log(offset)
     console.log('ON')
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -264,6 +263,7 @@ const Productos = () => {
 
   const handleBack=()=>{
     console.log("atras")
+    
 
    
 
@@ -272,12 +272,13 @@ const Productos = () => {
      
       
      } else {
-      setOffset(offset - 25)
+      setOffset(offset - 100)
      }
 
     console.log('ON')
+    console.log(offset)
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -293,15 +294,11 @@ const Productos = () => {
   
 
   useEffect(() => {
-    setRowCountState((prevRowCountState) =>
-      pageInfo?.totalRowCount !== undefined
-        ? pageInfo?.totalRowCount
-        : prevRowCountState,
-    );
+   
     fetchCharacters();
     fetchDivision();
     setOffset(0)
-  },  [pageInfo?.totalRowCount, setRowCountState]);
+  },  []);
 
   return (
     <div className="App">
@@ -323,10 +320,16 @@ const Productos = () => {
         <Form.Group as={Col} controlId="formGridEmail">
           <Form.Label>Estatus</Form.Label>
           <Select 
-              options = {options}
-              defaultValue={{label: `${prdestatus}`, value:`${prdestatus}`}}
-              onChange={(sup) => setPrdestatus(sup.value)}
-              isDisabled={eliminar}
+               options = {options}
+              defaultValue={0}
+              
+              isDisabled={false}
+              
+              isClearable
+             
+              placeholder={"Seleccione una opción"}
+             
+              
               />    
           
         </Form.Group>
@@ -337,11 +340,14 @@ const Productos = () => {
 
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridEmail">
-          <Form.Label>Linea de producción</Form.Label>
+          <Form.Label>División</Form.Label>
           <Select 
               options = {divisiones.map(sup => ({ label: sup.linnombre, value: sup.linnombre })) }
-              defaultValue={{label: `${prdlinid}`, value:`${prdlinid}`}}
+              defaultValue={0}
               onChange={(sup) => setPrdlinid(sup.value)}
+              isClearable
+             
+              placeholder={"Seleccione una opción"}
                 />  
           
         </Form.Group>
@@ -402,7 +408,8 @@ const Productos = () => {
         '& > :not(style)': {
           m: 1,
           width: '100%',
-          height: 600,
+          height: 500,
+          
         },
       }}
     >
@@ -413,31 +420,27 @@ const Productos = () => {
             sortModel: [{ field: 'prdid', sort: 'desc' }],
           },
         }}
-
-
-
+        getRowHeight={() => 'auto'} 
           rows={characters}
-          rowCount={rowCountState}
-          loading={isLoading}
-          rowsPerPageOptions={[5]}
-          pagination
-          page={page}
-          pageSize={pageSize}
-          paginationMode="server"
-          onPageChange={(newPage) => setPage(newPage)}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          hideFooterPagination
+          hideFooter
+          hideFooterSelectedRowCount
           columns={columns}
-          
-          
           getRowId={row => row.prdid}
-          
-          
           onRowClick={handleRowClick}
+          components={{ Toolbar: GridToolbar }}
+          localeText={{
+            toolbarExport: 'Exportar',
+            toolbarDensity:'Densidad',
+            toolbarFilters:'Filtros',
+            toolbarColumns:'Columnas'
           
-       
-        />
+          }}
 
-<Grid item xs={6}>
+        />
+          </Box>
+
+<Grid item xs={5} >
 
           <IconButton color="primary" aria-label="add to shopping cart" onClick={handleBack}>
           <ArrowBackIcon />
@@ -450,12 +453,12 @@ const Productos = () => {
         </Grid>
 
         
-  </Box>
+
       </Container>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Agregar</Modal.Title>
+          <Modal.Title>{titulo}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -534,7 +537,7 @@ const Productos = () => {
 
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
-          <Button variant="primary" onClick={handleAgregarProducto}>Agregar</Button>
+          <Button variant="primary" onClick={handleAgregarProducto}>{botonTitulo}</Button>
         </Modal.Footer>
 
       </Modal>

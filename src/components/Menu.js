@@ -16,10 +16,10 @@ const Menu = ({setToken}) => {
   }
   return (
     <div>
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="light" expand="lg"  >
       <Container>
       <a class="navbar-brand" href="/prueba/build/">
-      <img src={process.env.PUBLIC_URL + '/logo.png'} alt="" width="150" height="70" class="d-inline-block align-text-top"/>
+      <img src={process.env.PUBLIC_URL + '/logo.png'} alt="" width="100" height="100" class="d-inline-block align-text-top"/>
     
     </a>
         <Navbar.Brand href="/prueba/build">Inicio</Navbar.Brand>

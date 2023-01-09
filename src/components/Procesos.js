@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DataGrid, gridColumnsTotalWidthSelector } from '@mui/x-data-grid';
+import { DataGrid,  GridToolbar } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
@@ -18,7 +18,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Accordion from 'react-bootstrap/Accordion';
 import moment from 'moment';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ModalTitle } from 'react-bootstrap';
 
+ 
 
 const Procesos = () => {
   
@@ -32,6 +36,8 @@ const Procesos = () => {
   const [linea, setLinea] = useState([]);
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(10);
+  const [offset,setOffset]= useState(0);
+
 
   const SERVER_OPTIONS = {
     useCursorPagination: false,
@@ -71,19 +77,22 @@ const Procesos = () => {
   const [mprunidad, setMprunidad] = useState("");
   const [mprestatus, setMprestatus] = useState("");
   const [error, setError] = useState("");
+  const [titulo, setTitulo] = useState("");
+  const [botonTitulo, setBotontitulo] = useState("");
+
 
 
 
   const columns = [
-    { field: "mprid", headerName: "ID", flex: 1 },
-    { field: "mprtipo", headerName: "Tipo", flex: 1 },
-    { field: "mprfecha", headerName: "Fecha/Hora", flex: 1 },
-    { field: "mprlprid", headerName: "Linea", flex: 1 },
-    { field: "mprheadcount", headerName: "HC", flex: 1 },
-    { field: "prdclave", headerName: "Clave", flex: 1 },
-    { field: "prdnombre", headerName: "Descripción", flex: 1 },
-    { field: "mprcantidad", headerName: "Cantidad", flex: 1 },
-    { field: "mprcoms", headerName: "Comentarios", flex: 1 },
+    { field: "mprid", headerName: "ID"},
+    { field: "mprtipo", headerName: "Tipo" },
+    { field: "mprfecha", headerName: "Fecha/Hora" },
+    { field: "mprlprid", headerName: "Linea" },
+    { field: "mprheadcount", headerName: "HC"},
+    { field: "prdclave", headerName: "Clave"},
+    { field: "prdnombre", headerName: "Descripción",minWidth: 200 },
+    { field: "mprcantidad", headerName: "Cantidad"},
+    { field: "mprcoms", headerName: "Comentarios" ,minWidth: 200 },
   ];
 
   const options = [
@@ -147,7 +156,7 @@ const Procesos = () => {
 
     
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso?tipo=${mprtipo}&fechaini=${finicio}&fechafin=${ffin}&linea=${mprlprid}&clave=${prdclave}`)
+      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso?tipo=${mprtipo}&fechaini=${finicio}&fechafin=${ffin}&linea=${mprlprid}&clave=${prdclave}&offset=${offset}`)
       .then((data) => {
         setProcesos(data.data.items);
       
@@ -226,6 +235,8 @@ const Procesos = () => {
     fetchEstatus();
     setDeshabilitado(false);
     setShow(true);
+    setTitulo("Nuevo Proceso");
+    setBotontitulo("Guardar");
    
    
     console.log(localStorage.getItem("userToken"))
@@ -244,6 +255,36 @@ const Procesos = () => {
 
     
   }
+
+  const handleNext=()=>{
+
+    setOffset(offset + 100)
+
+    console.log('ON')
+    fetchProcesos();
+
+
+  }
+
+  const handleBack=()=>{
+    console.log("atras")
+
+   
+
+    if (offset<=0) {
+      setOffset(0)
+     
+      
+     } else {
+      setOffset(offset - 100)
+     }
+
+    console.log('ON')
+    fetchProcesos();
+  }
+
+
+
 
   useEffect(() => {
     setRowCountState((prevRowCountState) =>
@@ -275,9 +316,12 @@ const Procesos = () => {
           <Form.Label>Estatus</Form.Label>
           <Select 
               options = {options}
-              defaultValue={{label: `${mprtipo}`, value:`${mprtipo}`}}
+              defaultValue={0}
               onChange={(sup) => setMprtipo(sup.value)}
               isDisabled={eliminar}
+              isClearable
+             
+              placeholder={"Seleccione una opción"}
               />    
           
         </Form.Group>
@@ -299,6 +343,7 @@ const Procesos = () => {
           placeholder="Password" 
           value={fechafin}
           onChange={(e)=>setFechaFin(e.target.value)}/>
+          
         </Form.Group>
        
   
@@ -309,8 +354,11 @@ const Procesos = () => {
           <Form.Label>Linea de producción</Form.Label>
           <Select 
               options = { linea.map(sup => ({ label: sup.lprid, value: sup.lprid })) }
-              defaultValue={{label: `${mprlprid}`, value:`${mprlprid}`}}
+              defaultValue={0}
               onChange={(sup) => setMprlprid(sup.value)}
+              isClearable
+             
+              placeholder={"Seleccione una opción"}
                 />  
           
         </Form.Group>
@@ -361,8 +409,7 @@ const Procesos = () => {
         </Accordion.Item>
         </Accordion>
 
-        
-
+       
 
  <Box
       sx={{
@@ -382,6 +429,7 @@ const Procesos = () => {
             sortModel: [{ field: 'mprid', sort: 'desc' }],
           },
         }}
+        getRowHeight={() => 'auto'} 
           rows={procesos}
           rowCount={rowCountState}
           loading={isLoading}
@@ -395,13 +443,43 @@ const Procesos = () => {
           columns={columns}
           getRowId={row => row.mprid}
           onRowClick={handleRowClick}
+          components={{ Toolbar: GridToolbar }}
+          localeText={{
+            toolbarExport: 'Exportar',
+  toolbarExportLabel: 'Exportar',
+  toolbarExportCSV: 'Descargar como CSV',
+  toolbarExportPrint: 'Imprimir',
+  toolbarExportExcel: 'Descargar como Excel',
+            toolbarDensity:'Densidad',
+            toolbarFilters:'Filtros',
+            toolbarColumns:'Columnas'
+          
+          }}
+          hideFooter
+        
         />
+
+
+
+
+
   </Box>
+  <Grid item xs={6}>
+
+<IconButton color="primary" aria-label="add to shopping cart" onClick={handleBack}>
+<ArrowBackIcon />
+</IconButton>
+
+<IconButton color="primary" aria-label="add to shopping cart" onClick={handleNext}>
+<ArrowForwardIcon />
+</IconButton>
+
+</Grid>
       </Container>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Agregar</Modal.Title>
+          <Modal.Title>{titulo}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -495,7 +573,7 @@ const Procesos = () => {
 
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
-          <Button variant="primary" onClick={handleAgregarProceso}>Agregar</Button>
+          <Button variant="primary" onClick={handleAgregarProceso}>{botonTitulo}</Button>
         </Modal.Footer>
 
       </Modal>

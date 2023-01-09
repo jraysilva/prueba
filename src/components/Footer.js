@@ -9,7 +9,7 @@ const footer = () => {
        
         <p className="copyright text-center">
           © {new Date().getFullYear()}{" "}
-          <a >Bootstrap</a>
+          <a >Concir Sistemas</a>
         </p>
       </nav>
     </Container>
