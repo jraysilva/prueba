@@ -12,7 +12,7 @@ const Inicio = () => {
     <h5 class="card-title">BIENVENIDO</h5>
     
   </div>
-  <img src={process.env.PUBLIC_URL + '/logo.png'}  /> 
+  <img className='center' src={process.env.PUBLIC_URL + '/logo.png'} width="500" height="500" /> 
 </div>
 
 
