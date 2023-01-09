@@ -328,6 +328,7 @@ console.log(offset)
               isClearable
              
               placeholder={"Seleccione una opción"}
+              onChange={(sup) => setPrdestatus(sup.value)}
              
               
               />    
@@ -348,6 +349,7 @@ console.log(offset)
               isClearable
              
               placeholder={"Seleccione una opción"}
+              
                 />  
           
         </Form.Group>
