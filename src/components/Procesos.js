@@ -105,7 +105,7 @@ const Procesos = () => {
     console.log(mprtipo)
     
     axios({
-      url:"http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso",method:"POST",
+      url:"https://cia.argomex1.com/cia/prod/prod/movproceso",method:"POST",
       data:
       {
         "items":    [
@@ -156,7 +156,7 @@ const Procesos = () => {
 
     
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/movproceso?tipo=${mprtipo}&fechaini=${finicio}&fechafin=${ffin}&linea=${mprlprid}&clave=${prdclave}&offset=${offset}`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/movproceso?tipo=${mprtipo}&fechaini=${finicio}&fechafin=${ffin}&linea=${mprlprid}&clave=${prdclave}&offset=${offset}`)
       .then((data) => {
         setProcesos(data.data.items);
       
@@ -183,7 +183,7 @@ const Procesos = () => {
   const fetchLinea = () => {
     
     axios
-    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/lineaproduccion?empresa=1`)
+    .get(`https://cia.argomex1.com/cia/prod/prod/lineaproduccion?empresa=1`)
     .then((data) => {
       setLinea(data.data.items);
       
@@ -198,7 +198,7 @@ const Procesos = () => {
   const fetchEstatus = () => {
     
     axios
-    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/estproducto`)
+    .get(`https://cia.argomex1.com/cia/prod/prod/estproducto`)
     .then((data) => {
       setEstatus(data.data.items);
       
@@ -213,7 +213,7 @@ const Procesos = () => {
     console.log('ON')
    
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}`)
       .then((data) => {
         setCharacters(data.data.items);
        

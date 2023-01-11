@@ -88,7 +88,7 @@ const Productos = () => {
     
 
     axios({
-      url:"http://ciacloud.dyndns.org:8088/cia/prod/prod/productos",method:"POST",
+      url:"https://cia.argomex1.com/cia/prod/prod/productos",method:"POST",
       data:
       {
         "items":    [
@@ -128,7 +128,7 @@ const Productos = () => {
     console.log('ON')
     setPrdempid(localStorage.getItem("empresa"))
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -194,7 +194,7 @@ const Productos = () => {
   const fetchUnidades = () => {
     
     axios
-    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/unidades`)
+    .get(`https://cia.argomex1.com/cia/prod/prod/unidades`)
     .then((data) => {
       setUnidades(data.data.items);
       
@@ -208,7 +208,7 @@ const Productos = () => {
   const fetchDivision = () => {
     
     axios
-    .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/division?empresa=1`)
+    .get(`https://cia.argomex1.com/cia/prod/prod/division?empresa=1`)
     .then((data) => {
       setDivisiones(data.data.items);
       
@@ -249,7 +249,7 @@ const Productos = () => {
 console.log(offset)
     console.log('ON')
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -278,7 +278,7 @@ console.log(offset)
     console.log('ON')
     console.log(offset)
     axios
-      .get(`http://ciacloud.dyndns.org:8088/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
