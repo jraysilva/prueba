@@ -43,7 +43,7 @@ const Productos = () => {
   const [prdid, setPrdid] = useState("");
   const [prdclave, setPrdclave] = useState("");
   const [prdups, setPrdups] = useState("");
-  const [prdempid, setPrdempid] = useState("");
+  const [prdempid, setPrdempid] = useState(localStorage.getItem("empresa"));
   const [prdnombre, setPrdnombre] = useState("");
   const [prdlinid, setPrdlinid] = useState("");
   const [prdualid, setPrdualid] = useState("");
@@ -127,8 +127,9 @@ const Productos = () => {
   const fetchCharacters = () => {
     console.log('ON')
     setPrdempid(localStorage.getItem("empresa"))
+    console.log(prdempid)
     axios
-      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=${prdempid}&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -208,7 +209,7 @@ const Productos = () => {
   const fetchDivision = () => {
     
     axios
-    .get(`https://cia.argomex1.com/cia/prod/prod/division?empresa=1`)
+    .get(`https://cia.argomex1.com/cia/prod/prod/division?empresa=${prdempid}`)
     .then((data) => {
       setDivisiones(data.data.items);
       
@@ -249,7 +250,7 @@ const Productos = () => {
 console.log(offset)
     console.log('ON')
     axios
-      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=${prdempid}&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -278,7 +279,7 @@ console.log(offset)
     console.log('ON')
     console.log(offset)
     axios
-      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=${prdempid}&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&offset=${offset}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -295,6 +296,7 @@ console.log(offset)
 
   useEffect(() => {
    
+    setPrdempid(localStorage.getItem("empresa"))
     fetchCharacters();
     fetchDivision();
     setOffset(0)

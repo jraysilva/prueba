@@ -18,7 +18,8 @@ function App() {
 
   return (
     <div >
-      <Menu setToken={setToken} />
+      {token && <Menu setToken={setToken}/>}
+  
       <HashRouter>
       <Routes>
           <Route path="/productos"  element={token ?  <Productos  />  : <Login token={token} setToken={setToken}/>}/>

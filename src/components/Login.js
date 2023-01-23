@@ -35,6 +35,7 @@ const loginHandler=()=>{
       setToken(res.data.usumail);
       localStorage.setItem("userToken", res.data.usumail);
       localStorage.setItem("empresa", res.data.usuempid);
+      localStorage.setItem("usuario", res.data.usuid);
       
   } else {
     setError(res.data.message);
@@ -48,7 +49,7 @@ const loginHandler=()=>{
 };
 
   return (
-    <div >
+  
 
    
 <div>
@@ -59,11 +60,7 @@ const loginHandler=()=>{
             <Card className="shadow">
               <Card.Body>
                 <div className="mb-3 mt-md-4">
-                <img className='center' src={process.env.PUBLIC_URL + '/logo.png'} width="300" height="300" /> 
-            
-                  <h2 className="fw-bold mb-2 text-uppercase ">Login</h2>
-                  
-                  <p className=" mb-5">Ingrese su usuario y contraseña</p>
+                <img className='center' src={process.env.PUBLIC_URL + '/logo.png'}  /> 
                   <div className="mb-3">
                     <Form>
                       <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -98,14 +95,7 @@ const loginHandler=()=>{
         </Row>
       </Container>
     </div>
-     
-      
 
-      
-
-
-
-    </div>
   )
 }
 

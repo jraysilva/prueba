@@ -27,6 +27,7 @@ import { ModalTitle } from 'react-bootstrap';
 const Procesos = () => {
   
   const [show, setShow] = useState(false);
+  const [prdempid, setPrdempid] = useState(localStorage.getItem("empresa"));
   const [deshabilitado, setDeshabilitado] = useState(true);
   const [eliminar, setEliminar] = useState(false);
   const [procesos, setProcesos] = useState([]);
@@ -73,7 +74,7 @@ const Procesos = () => {
   const [prdnombre, setPrdnombre] = useState("");
   const [mprcoms, setMprcoms] = useState("");
   const [mprcantidad, setMprcantidad] = useState("");
-  const [mprusuid, setMprusuid] = useState("");
+  const [mprusuid, setMprusuid] = useState(localStorage.getItem("usuario"));
   const [mprunidad, setMprunidad] = useState("");
   const [mprestatus, setMprestatus] = useState("");
   const [error, setError] = useState("");
@@ -113,8 +114,8 @@ const Procesos = () => {
         "mprtipo": mprtipo,
         "mprlprid": mprlprid,
         "prdclave": prdclave,
-        "prdempid": 1,
-        "mprusuid": 1,
+        "prdempid": prdempid,
+        "mprusuid": mprusuid,
         "mprcantidad": mprcantidad,
         "mprheadcount": mprheadcount,
         "mpreprid": mprestatus,
@@ -183,7 +184,7 @@ const Procesos = () => {
   const fetchLinea = () => {
     
     axios
-    .get(`https://cia.argomex1.com/cia/prod/prod/lineaproduccion?empresa=1`)
+    .get(`https://cia.argomex1.com/cia/prod/prod/lineaproduccion?empresa=${prdempid}`)
     .then((data) => {
       setLinea(data.data.items);
       
@@ -213,7 +214,7 @@ const Procesos = () => {
     console.log('ON')
    
     axios
-      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=1&clave=${prdclave}`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=${prdempid}&clave=${prdclave}`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -237,6 +238,7 @@ const Procesos = () => {
     setShow(true);
     setTitulo("Nuevo Proceso");
     setBotontitulo("Guardar");
+    console.log(mprusuid)
    
    
     console.log(localStorage.getItem("userToken"))
