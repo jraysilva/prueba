@@ -1,7 +1,7 @@
 {
   "name": "appexv4githubpages",
   "version": "0.1.0",
-  "homepage": "https://jraysilva.github.io/prueba/build/#",
+  "homepage": "https://cia.argomex.com/produccion/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -29,7 +29,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "compile": "npm run build && cd build && jar -cvf produccion.war ."
   },
   "eslintConfig": {
     "extends": [

@@ -65,11 +65,11 @@ const Procesos = () => {
   const [finicio, setFinicio] = useState("");
   const [ffin, setFfin] = useState("");
   const [prdclave, setPrdclave] = useState("");
-  const [mprtipo, setMprtipo] = useState("");
+  const [mprtipo, setMprtipo] = useState({value:"", label: ""});
   const [fechaini, setFechaIni]=useState("");
   const [fechafin, setFechaFin]=useState("");
   const [mprfecha, setMprfecha] = useState("");
-  const [mprlprid, setMprlprid] = useState("");
+  const [mprlprid, setMprlprid] = useState({value:"", label: ""});
   const [mprheadcount, setMprheadcount] = useState("");
   const [prdnombre, setPrdnombre] = useState("");
   const [mprcoms, setMprcoms] = useState("");
@@ -100,6 +100,36 @@ const Procesos = () => {
     { value: 'E', label: 'Entrada' },
     { value: 'S', label: 'Salida' },
   ]
+
+
+
+
+  const HandelChange = (obj) => {
+
+    if(obj===null){
+      setMprtipo({value:"", label: ""})
+      console.log(mprtipo)
+    }else{
+      setMprtipo(obj);
+      console.log(obj);
+
+    }
+   
+  };
+
+
+  const HandelChangeLinea = (obj) => {
+
+    if(obj===null){
+      setMprlprid({value:"", label: ""})
+      console.log(mprlprid)
+    }else{
+      setMprlprid(obj);
+      console.log(obj);
+
+    }
+   
+  };
 
   const handleAgregarProceso = () => {
     console.log(prdclave)
@@ -157,7 +187,7 @@ const Procesos = () => {
 
     
     axios
-      .get(`https://cia.argomex1.com/cia/prod/prod/movproceso?tipo=${mprtipo}&fechaini=${finicio}&fechafin=${ffin}&linea=${mprlprid}&clave=${prdclave}&offset=${offset}`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/movproceso?tipo=${mprtipo.value}&fechaini=${finicio}&fechafin=${ffin}&linea=${mprlprid.value}&clave=${prdclave}&offset=${offset}`)
       .then((data) => {
         setProcesos(data.data.items);
       
@@ -318,8 +348,11 @@ const Procesos = () => {
           <Form.Label>Estatus</Form.Label>
           <Select 
               options = {options}
+              getOptionLabel={(option) => option.label}
+              getOptionValue={(option) => option.value}
               defaultValue={0}
-              onChange={(sup) => setMprtipo(sup.value)}
+             
+              onChange={(option) => HandelChange(option)} // this returns (option) => option.phaseText) as a string
               isDisabled={eliminar}
               isClearable
              
@@ -356,8 +389,12 @@ const Procesos = () => {
           <Form.Label>Linea de producción</Form.Label>
           <Select 
               options = { linea.map(sup => ({ label: sup.lprid, value: sup.lprid })) }
+              getOptionLabel={(option) => option.label}
+              getOptionValue={(option) => option.value}
               defaultValue={0}
-              onChange={(sup) => setMprlprid(sup.value)}
+             
+              onChange={(option) => HandelChangeLinea(option)} // this returns (option) => option.phaseText) as a string
+              
               isClearable
              
               placeholder={"Seleccione una opción"}
@@ -392,12 +429,6 @@ const Procesos = () => {
 
       </Form.Group>
       
-      <Form.Group as={Col} controlId="formGridEmail">
-      <Button variant="primary"  onClick={fetchLimpiar}>
-        Limpiar
-      </Button>
-
-      </Form.Group>
       
 
 

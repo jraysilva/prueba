@@ -45,7 +45,7 @@ const Productos = () => {
   const [prdups, setPrdups] = useState("");
   const [prdempid, setPrdempid] = useState(localStorage.getItem("empresa"));
   const [prdnombre, setPrdnombre] = useState("");
-  const [prdlinid, setPrdlinid] = useState("");
+  const [prdlinid, setPrdlinid] = useState({value:"", label: ""});
   const [prdualid, setPrdualid] = useState("");
   const [prdpzascaja, setPrdpzascaja] = useState("");
   const [prdpzaspallet, setPrdpzaspallet] = useState("");
@@ -56,6 +56,8 @@ const Productos = () => {
   const [titulo, setTitulo] = useState("");
   const [botonTitulo, setBotontitulo] = useState("");
 
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedValue, setSelectedValue] = useState({});
   
 
   const columns = [
@@ -81,10 +83,40 @@ const Productos = () => {
     
   ]
 
-  
 
+  const [selOption, setSelOption] = useState({value:"", label: ""});
+
+  const HandelChange = (obj) => {
+
+    if(obj===null){
+      setSelOption({value:"", label: ""})
+      console.log(selOption)
+    }else{
+      setSelOption(obj);
+      console.log(obj);
+
+    }
+   
+  };
+
+
+  const HandelChangeDiv = (obj) => {
+
+    if(obj===null){
+      setPrdlinid({value:"", label: ""})
+      console.log(prdlinid)
+    }else{
+      setPrdlinid(obj);
+      console.log(obj);
+
+    }
+   
+  };
+  
   
   const handleAgregarProducto = () => {
+
+  
     
 
     axios({
@@ -125,11 +157,14 @@ const Productos = () => {
   };
 
   const fetchCharacters = () => {
+    
+
+    
     console.log('ON')
     setPrdempid(localStorage.getItem("empresa"))
     console.log(prdempid)
     axios
-      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=${prdempid}&clave=${prdclave}&estatus=${prdestatus}&division=${prdlinid}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/productos?empresa=${prdempid}&clave=${prdclave}&estatus=${selOption.value}&division=${prdlinid.value}&limit=100`)
       .then((data) => {
         setCharacters(data.data.items);
        
@@ -300,6 +335,8 @@ console.log(offset)
     fetchCharacters();
     fetchDivision();
     setOffset(0)
+   
+   
   },  []);
 
   return (
@@ -323,14 +360,19 @@ console.log(offset)
           <Form.Label>Estatus</Form.Label>
           <Select 
                options = {options}
+               getOptionLabel={(option) => option.label}
+               getOptionValue={(option) => option.value}
               defaultValue={0}
-              
+            
+           
+              onChange={(option) => HandelChange(option)} // this returns (option) => option.phaseText) as a string
               isDisabled={false}
               
               isClearable
+              
              
               placeholder={"Seleccione una opción"}
-              onChange={(sup) => setPrdestatus(sup.value)}
+              
              
               
               />    
@@ -347,8 +389,13 @@ console.log(offset)
           <Select 
               options = {divisiones.map(sup => ({ label: sup.linnombre, value: sup.linnombre })) }
               defaultValue={0}
-              onChange={(sup) => setPrdlinid(sup.value)}
+              getOptionLabel={(option) => option.label}
+               getOptionValue={(option) => option.value}
+             
               isClearable
+
+            
+              onChange={(option) => HandelChangeDiv(option)} // this returns (option) => option.phaseText) as a string
              
               placeholder={"Seleccione una opción"}
               
@@ -383,12 +430,7 @@ console.log(offset)
 
       </Form.Group>
       
-      <Form.Group as={Col} controlId="formGridEmail">
-      <Button variant="primary"  onClick={fetchLimpiar}>
-        Limpiar
-      </Button>
-
-      </Form.Group>
+      
       
 
 
@@ -473,7 +515,7 @@ console.log(offset)
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="prdups">
-              <Form.Label>UPS</Form.Label>
+              <Form.Label>UPC</Form.Label>
               <Form.Control type="text" value={prdups} onChange={(e)=>setPrdups(e.target.value)}/>
             </Form.Group>
 

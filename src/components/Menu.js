@@ -14,13 +14,13 @@ const Menu = ({setToken}) => {
 
   const logOutHandler=()=>{
     localStorage.clear();
-    document.location.href = '/prueba/build/'
+    document.location.href = '/produccion/'
   }
   return (
     <div>
         <Navbar bg="light" expand="lg"  >
       <Container>
-      <a class="navbar-brand" href="/prueba/build/">
+      <a class="navbar-brand" href="/produccion/">
       <img src={process.env.PUBLIC_URL + '/logo.png'} alt="" width="80" height="118" class="d-inline-block align-text-top"/>
     
     </a>
@@ -28,10 +28,10 @@ const Menu = ({setToken}) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-          <Nav.Link href="/prueba/build/#">Inicio</Nav.Link>
+          <Nav.Link href="/produccion/#">Inicio</Nav.Link>
           
-            <Nav.Link href="/prueba/build/#/procesos">Procesos E/S</Nav.Link>
-            <Nav.Link href="/prueba/build/#/productos">Productos</Nav.Link>
+            <Nav.Link href="/produccion/#/procesos">Procesos E/S</Nav.Link>
+            <Nav.Link href="/produccion/#/productos">Productos</Nav.Link>
 
 
           

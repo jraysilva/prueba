@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DataGrid,  GridToolbar } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -31,7 +31,7 @@ import { width } from '@mui/system';
 
 const Inicio = () => {
   
- 
+  const ref = useRef(null);
   
   const [fechaini, setFechaIni]=useState("");
   const [fechafin, setFechaFin]=useState("");
@@ -40,21 +40,20 @@ const Inicio = () => {
   const [offset,setOffset]= useState(0);
   const [finicio, setFinicio] = useState(moment().format('DD/MM/YYYY'));
   const [ffin, setFfin] = useState(moment().format('DD/MM/YYYY'));
-  const [mprlprid, setMprlprid] = useState("");
+  const [mprlprid, setMprlprid] = useState({value:"", label: ""});
 
   const [dashboard, setDashboard] = useState([]);
-  const [fechaincial, setFechaInicial]=useState(moment().format('DD/MM/YYYY'));
-  const [fechafinal, setFechaFinal]=useState(moment().format('DD/MM/YYYY'));
+ 
   
   
   
  
   
-  const [lpralmid, setLpralmid] = useState("");
+  const [lpralmid, setLpralmid] = useState({value:"", label: ""});
   const [lprnombre, setLprnombre] = useState("");
   const [prdclave, setPrdclave] = useState("");
   const [prdnombre, setPrdnombre] = useState("");
-  const [proestatus, setProestatus] = useState([]);
+  const [proestatus, setProestatus] = useState({value:"", label: ""});
   const [proheadcount, setProheadcount] = useState("");
   const [unidades, setUnidades] = useState("");
   const [procesadas, setProcesadas] = useState("");
@@ -62,6 +61,46 @@ const Inicio = () => {
   const [avance, setAvance] = useState("");
   const [rate, setRate] = useState(0);
 
+
+  const HandelChange = (obj) => {
+
+    if(obj===null){
+      setProestatus({value:"", label: ""})
+      console.log(proestatus)
+    }else{
+      setProestatus(obj);
+      console.log(obj);
+
+    }
+   
+  };
+
+
+  const HandelChangeAlm = (obj) => {
+
+    if(obj===null){
+      setLpralmid({value:"", label: ""})
+      console.log(lpralmid)
+    }else{
+      setLpralmid(obj);
+      console.log(obj);
+
+    }
+   
+  };
+
+  const HandelChangeLinea = (obj) => {
+
+    if(obj===null){
+      setMprlprid({value:"", label: ""})
+      console.log(mprlprid)
+    }else{
+      setMprlprid(obj);
+      console.log(obj);
+
+    }
+   
+  };
  
   const columns = [
    
@@ -108,29 +147,37 @@ const Inicio = () => {
     fetchLinea();
 
     
+    setInterval(() => {
+      ref.current.click();
+    }, 900000); //miliseconds
     
-  
-    
-    fetchDashboard();
+    setFechaIni(fechaini)
+    setFechaFin(fechafin)
+
+
    
     setOffset(0)
   },  []);
 
+  const myfunc = () => {
+    console.log("I was activated 5 seconds later");
+  };
  
 
   const fetchDashboard = () => {
-    console.log("Holaa")
     console.log('ON')
     console.log('ON fecha inicial')
-    console.log(fechaincial)
+   
    
 
     console.log('ON fecha inicialasa')
-    console.log(ffin)
+    console.log(lpralmid)
+
 
     
     if (fechaini==""|| fechafin=="") {
       console.log("sin fechas")
+
      
       
      } else {
@@ -142,7 +189,7 @@ const Inicio = () => {
      }
    
     axios
-      .get(`https://cia.argomex1.com/cia/prod/prod/dashboard1?empresa=1&estatus=${proestatus}&fechaini=${finicio}&fechafin=${ffin}&almacen=${lprnombre}&linea=${mprlprid}&clave=${prdclave}&offset=${offset}&limit=100`)
+      .get(`https://cia.argomex1.com/cia/prod/prod/dashboard1?empresa=1&estatus=${proestatus.value}&fechaini=${finicio}&fechafin=${ffin}&almacen=${lpralmid.value}&linea=${mprlprid.value}&clave=${prdclave}&offset=${offset}&limit=100`)
       .then((data) => {
         setDashboard(data.data.items);
       
@@ -229,8 +276,11 @@ const Inicio = () => {
           <Form.Label>Estatus</Form.Label>
           <Select 
            options = {options}
+           getOptionLabel={(option) => option.label}
+           getOptionValue={(option) => option.value}
            defaultValue={0}
-           onChange={(sup) => setProestatus(sup.value)}
+          
+              onChange={(option) => HandelChange(option)} // this returns (option) => option.phaseText) as a string
            
            isDisabled={false}
            
@@ -250,6 +300,7 @@ const Inicio = () => {
           <Form.Label>Fecha Inicio</Form.Label>
           <Form.Control type="date" 
           placeholder="Enter email" 
+          value={fechaini}
          
           onChange={(e)=>setFechaIni(e.target.value)}/>
         </Form.Group>
@@ -258,7 +309,7 @@ const Inicio = () => {
           <Form.Label>Fecha Fin</Form.Label>
           <Form.Control type="date" 
           placeholder="Password" 
-          
+          value={fechafin}
           onChange={(e)=>setFechaFin(e.target.value)}/>
           
         </Form.Group>
@@ -273,8 +324,12 @@ const Inicio = () => {
           <Form.Label>Almacén</Form.Label>
           <Select 
             options = {almacen.map(sup => ({ label: sup.almnombre, value: sup.almid })) }
+            getOptionLabel={(option) => option.label}
+           getOptionValue={(option) => option.value}
             defaultValue={0}
-            onChange={(sup) => setLpralmid(sup.value)}
+           
+            onChange={(option) => HandelChangeAlm(option)} // this returns (option) => option.phaseText) as a string
+           
             isClearable
            
             placeholder={"Seleccione una opción"}
@@ -291,8 +346,10 @@ const Inicio = () => {
           <Form.Label>Linea de producción</Form.Label>
           <Select 
               options = { linea.map(sup => ({ label: sup.lprid, value: sup.lprid })) }
+              getOptionLabel={(option) => option.label}
+           getOptionValue={(option) => option.value}
               defaultValue={0}
-              onChange={(sup) => setMprlprid(sup.value)}
+              onChange={(option) => HandelChangeLinea(option)} // this returns (option) => option.phaseText) as a string
               isClearable
              
               placeholder={"Seleccione una opción"}
@@ -321,18 +378,13 @@ const Inicio = () => {
 
       <Row className="mb-3">
       <Form.Group as={Col} controlId="formGridEmail">
-      <Button variant="primary" onClick={fetchDashboard}>
+      <Button variant="primary"  ref={ref} onClick={fetchDashboard}>
         Buscar
       </Button>
 
       </Form.Group>
       
-      <Form.Group as={Col} controlId="formGridEmail">
-      <Button variant="primary" >
-        Limpiar
-      </Button>
-
-      </Form.Group>
+    
       
 
 
